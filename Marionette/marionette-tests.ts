@@ -6,9 +6,9 @@ class TestView extends Marionette.ItemView {
     };
 
     constructor(options?: any) {
-        this.ui = TestView.ui;
-
         super(options);
+
+        this.ui = TestView.ui;
     }
 }
 
@@ -21,10 +21,12 @@ class Laytt extends Marionette.Layout {
     };
 
     constructor(options?: any) {
+        super(options);
+
         this.regions = Laytt.regions;
         this.template = this.template();
 
-        super(options);
+
     }
 
     template:any = () => '';

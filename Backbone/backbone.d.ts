@@ -77,32 +77,18 @@ declare module Backbone {
     stopListening(object?: Object, name?: string, callback?: Function): any;
   }
 
-  // Underscore mixins
-  interface ModelUnderscoreMixins {
-    keys(): Array<string>;
-    values(): Array<any>;
-    pairs(): Array<Array<any>>;
-    invert(): Object;
-    pick(...keys: Array<string>): Object;
-    pick(filter: (value: any, key: string, object: Object) => void): Object;
-    omit(...keys: string[]): Object;
-    omit(filter: (value: any, key: string, object: Object) => void): Object;
-  }
 
-  class Model extends Events implements ModelUnderscoreMixins {
+  class Model extends Events {
     attributes: Object;
     cid: string;
     changed: Object;
     collection: Collection<Model>;
+    defaults: any; // TODO: Update this to Function | Object when union types exist
     id: any;
     idAttribute: string;
+    url: any; //TODO: Update this to Function | string when union types exist
+    urlRoot: any; // TODO: Update this to Function | string when union types exist
     validationError: any;
-
-    //TODO: Update this to Function | Object when union types exist
-    defaults: any;
-
-    //TODO: Update this to Function | string when union types exist
-    url: any;
 
     constructor(attributes?: Object, options?: ModelConstructorOptions);
 
@@ -120,24 +106,24 @@ declare module Backbone {
     fetch(options?: ModelFetchOptions): JQueryXHR;
     has(attribute: string): boolean;
     hasChanged(attribute?: string): boolean;
-    initialize(options?: any): void;
+    initialize(options?: ModelConstructorOptions): void;
     isNew(): boolean;
     isValid(): boolean;
     parse(response: any, options: any): any;
     previous(attribute: string): any;
     previousAttributes(): any;
     save(attributes?: Object, options?: ModelSaveOptions): JQueryXHR;
-    save(attributes?: Object, value?: any, options?: ModelSaveOptions): JQueryXHR;
+    save(attribute: string, value: any, options?: ModelSaveOptions): JQueryXHR;
     sync(method: string, model: Model, options?: any): JQueryXHR;
     toJSON(options?: any): any;
     unset(attribute: string, options?: Silenceable): Model;
 
-    // Mixins
+    // Underscore Mixins
     keys(): Array<string>;
     values(): Array<any>;
     pairs(): Array<Array<any>>;
     invert(): Object;
-    pick(...keys: Array<string>): Object;
+    pick(...keys: string[]): Object;
     pick(filter: (value: any, key: string, object: Object) => boolean): Object;
     omit(...keys: string[]): Object;
     omit(filter: (value: any, key: string, object: Object) => boolean): Object;
@@ -157,64 +143,57 @@ declare module Backbone {
     //var attributeMethods = ['groupBy', 'countBy', 'sortBy', 'indexBy'];
   }
 
-  class Collection<TModel extends Model> extends Events implements CollectionUnderscoreMixins, CollectionUnderscoreNamedMixins {
+  interface CollectionConstrutorOptions {
+    model?: Model;
+    comparator?: any; // TODO: make this Function | string when union type exists
+  }
+
+  interface CollectionAdditionOptions {
+    at?: number;
+    merge?: boolean;
+  }
+
+  class Collection<TModel extends Model> extends Events { // implements CollectionUnderscoreMixins, CollectionUnderscoreNamedMixins {
     cid: string;
     length: number;
-    // model: typeof TModel;
-    model: {
-      new(): TModel
-    };
+    model: TModel;
+    //model: { new(): TModel };
+    models: TModel[];
+    url: any; // TODO: replace with Function | String
 
-    constructor(models?: Array<any>, options?: any);
+    constructor(models?: TModel[], options?: CollectionConstrutorOptions);
 
-    
 
-    initialize(options?: any): void;
-
-    toJSON(options?: any): any;
-
-    sync(...arguments: Array<any>): JQueryXHR;
-
-    add(models: Array<any>, options: any): Array<any>;
-    remove(models: Array<any>, options: any): Array<any>;
-
-    set(models: Array<any>, options: any): Array<any>;
-    reset(models: Array<any>, options: any): Array<any>;
-
-    push(model: any, options: any): any;
-    pop(options: any): any;
-
-    shift(options: any): TModel;
-    unshift(model: TModel, options: any): any;
-
-    slice(begin?: number, end?: number): Array<TModel>;
-
+    add(model: TModel, options?: CollectionAdditionOptions): TModel;
+    add(models: TModel[], options?: CollectionAdditionOptions): TModel[];
+    at(index: number): TModel;
+    clone(): Collection<TModel>;
+    create(model: any, options?: any): TModel;
+    fetch(options?: any): JQueryXHR;
+    findWhere(attributes: any): any;
     get(id: number): TModel;
     get(id: string): TModel;
     get(id: TModel): TModel;
-
-    at(index: number): TModel;
-
-    where(attributes: any, first?: boolean): any;
-
-    findWhere(attributes: any): any;
-
-    sort(options?: any): Collection<TModel>;
-
-    pluck(attributes?: any): any;
-
-    fetch(options?: any): JQueryXHR;
-
-    create(model: any, options?: any): TModel;
-
+    initialize(options?: CollectionConstrutorOptions): void;
     parse(response: any, options: any): any;
-
-    clone(): Collection<TModel>;
+    pluck(attributes?: any): any;
+    pop(options: any): any;
+    push(model: any, options: any): any;
+    remove(models: Array<any>, options: any): Array<any>;
+    reset(models: Array<any>, options: any): Array<any>;
+    set(models: Array<any>, options: any): Array<any>;
+    shift(options: any): TModel;
+    slice(begin?: number, end?: number): Array<TModel>;
+    sort(options?: any): Collection<TModel>;
+    sync(method: string, collection: Collection<TModel>, options?: any): JQueryXHR;
+    toJSON(options?: any): any;
+    unshift(model: TModel, options: any): any;
+    where(attributes: any, first?: boolean): any;
   }
 
   interface ViewOptions {
     model: Model;
-    collection: Collection<Model>;
+    collection: Collection<Backbone.Model>;
     el: any;
     id: string;
     className: any; //TODO: replace with Function | string when union types are available
@@ -226,7 +205,7 @@ declare module Backbone {
   class View extends Events {
     attributes: Object;
     cid: string;
-    collection: Collection<Model>;
+    collection: Collection<Backbone.Model>;
     className: string;
     el: any;
     $el: JQuery;

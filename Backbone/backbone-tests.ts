@@ -5,46 +5,25 @@ module Trackr {
 
 }
 
-var model = new Backbone.Model();
-
-model.set({
-  MyAwesomeVar: '124'
-});
-
-var model2 = model.clone();
-console.log(model2.get('MyAwesomeVar'));
-
-Backbone.emulateHTTP = false;
-Backbone.emulateJSON = false;
-
-console.log(Backbone.VERSION);
-
-Backbone.$.ajax({
-  url: 'http://www.google.com'
-});
-
-var localBackbone = Backbone.noConflict();
-
-console.log(localBackbone.VERSION);
-
-class Model extends Backbone.Model {
-  constructor(attributes?: any, options?: any) {
-    this.defaults = {
-      id: 1
-    };
-
-    super(attributes, options);
-  }
+class BBModel extends Backbone.Model {
+    logMe():void {
+        console.log(this);
+    }
 }
 
-var extendedModel = new Model();
+class OtherModel extends Backbone.Model {
 
-extendedModel.omit(function() {
+}
 
-});
+class BackboneCollection extends Backbone.Collection<BBModel> {
+
+}
 
 
-var view = new Backbone.View();
-var $el = $('.awesome');
+var collection = new BackboneCollection();
 
-view.setElement($el);
+//var otherModel = new OtherModel();
+
+var testModel = collection.model;
+
+testModel.logMe();

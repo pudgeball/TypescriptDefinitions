@@ -81,6 +81,7 @@ declare module Marionette {
 
     class View extends Backbone.View {
         events: any // TODO: replace with Function | Object
+        options: Object;
         template: any; // TODO: replace with Function | string
         templateHelpers: any; // TODO: replace with Function | Object
         triggers: any; // TODO: replace with Function | Object
@@ -93,6 +94,7 @@ declare module Marionette {
         getTemplate(): any;
         normalizeUIKeys(hash: Object): Object;
         serializeData();
+        triggerMethod(methodName: string, ...arguments: any[]);
         unbindUIElements();
     }
 }

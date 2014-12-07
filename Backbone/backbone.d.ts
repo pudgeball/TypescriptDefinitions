@@ -97,7 +97,7 @@ declare module Backbone {
     set(attributes: Object, options?: ModelSetOptions): Model;
     set(key:string, value: any, options?: ModelSetOptions): Model;
 
-    
+
     changedAttributes(attributes?: Object): Object;
     clear(options?: Silenceable): Model;
     clone(): Model;
@@ -208,7 +208,7 @@ declare module Backbone {
     collection: Collection<Backbone.Model>;
     className: string;
     el: any;
-    $el: JQuery;
+    $el: any;
     model: Model;
     tagName: string;
 
